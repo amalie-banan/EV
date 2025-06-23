@@ -23,3 +23,10 @@ __pycache__/
 # Ignorer OS-specifikke filer
 .DS_Store
 Thumbs.db
+
+
+# Ignorer .csv filer i roden af projektet
+/*.csv
+
+# Ignorer alle filer i vindmoeller_data mappen
+vindmoeller_data/*
