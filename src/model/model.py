@@ -4,27 +4,58 @@ from mesa.datacollection import DataCollector
 import numpy as np
 import random
 import math
+import os
+import pandas as pd
 
 # Korrekte imports til dine agent klasser
 from agent.GridNode import GridNode  
 
 from agent.Windmill import Windmill
 from agent.DenmarkOutline import DenmarkOutline
-from helper.helper_functions import create_elliptical_octagon_outline_precise,get_cells_inside_outline_scanline
+from helper.helper_functions import create_elliptical_octagon_outline_precise,get_cells_inside_outline_scanline,map_coordinates_to_grid
+from helper.windmill_data_handler import WindmillDataHandler
 
 class EVModel(Model):
-    """Model af elbil-økosystemet i Danmark"""
+    """Model af vindmøller i Danmark"""
     
-    def __init__(self, working_windmills=200, width=60, height=60, broken_windmills=0):
+    def __init__(self, working_windmills=200, broken_windmills=0, create_windmill_data=False, width=60, height=60 ):
         super().__init__()
+        print(width)
+        print(height)
         self.num_working_windmills = working_windmills
         self.num_broken_windmills = broken_windmills
         self.grid = MultiGrid(width, height, True)
         self.current_step = 0
-          
-        outline_coords = self.create_denmark_outline()
-        self.valid_coords = self.create_valid_coords(outline_coords)
 
+        if not create_windmill_data and os.path.isfile("vindmoeller_complete.csv"):
+            windmill_data = pd.read_csv("vindmoeller_complete.csv")
+        elif create_windmill_data or not os.path.isfile("vindmoeller_complete.csv"):
+            WindmillDataHandler()
+            windmill_data = pd.read_csv("vindmoeller_complete.csv")
+        
+        print(windmill_data.columns)
+        windmill_data = windmill_data[['GSRN','Tilsluttet','Kapacitet','Rotordiame','Navhøjde',
+                                       'Fabrikat','Model','Kommune', 'Postnummer', 'Ejerlav',
+                                       'Latitude', 'Longitude']]
+     
+        postnummer_counts = windmill_data['Postnummer'].value_counts()
+
+        pos_ = map_coordinates_to_grid(55.697791,12.622368,self.grid.width, self.grid.height)
+        windmill_data['Grid_Position'] = windmill_data.apply(
+                lambda row: map_coordinates_to_grid(row['Latitude'], row['Longitude'], self.grid.width, self.grid.height),
+                axis=1
+            )
+        
+        
+      
+        print(list(windmill_data['Grid_Position']))
+      
+        #outline_coords = self.create_denmark_outline()
+       #self.valid_coords = self.create_valid_coords(Grid_Position_counts)
+        self.valid_coords = list(windmill_data['Grid_Position'])
+
+        Grid_Position_counts = windmill_data['Grid_Position'].value_counts()
+        self.grid_position_dict = Grid_Position_counts.to_dict()
         self.create_windmills('standard')
        
         
@@ -33,18 +64,26 @@ class EVModel(Model):
         print("Creating Windmills to map")
         print("#"*50)
         
-        positions = self.valid_coords
+        positions = list(set([x for x in self.valid_coords if x is not None]))
         random.shuffle(positions)
-        if len(positions)>0:
+        agents_to_place =  min(self.num_working_windmills,len(positions))
+        if len(positions) >= 0:
             n_windmills = self.num_working_windmills
             for i in range(0,n_windmills):
-                pos = positions.pop()
-                if self.grid.is_cell_empty(pos):
-                    windmill = Windmill(self, turbine_type)
-                    self.grid.place_agent(windmill, pos)
-                    print(f"Placed Windmill #{i+1} at: ", pos)
+                if agents_to_place>0 :
+                    pos = positions.pop()
+                    scaling_factor = self.grid_position_dict.get(pos)
+                    if self.grid.is_cell_empty(pos):
+                        windmill = Windmill(self, scaling_factor=scaling_factor,turbine_type=turbine_type)
+                        self.grid.place_agent(windmill, pos)
+                        agents_to_place-=1
+                        print(f"Placed Windmill #{i+1} at: ", pos, " with scaling factor ", scaling_factor)
+
+                    else:
+                        print(f"Position {pos} is already occupied.")
                 else:
-                    print(f"Position {pos} is already occupied.")
+                    print("No more agents to place in world")
+                    break
 
     def create_denmark_outline(self):
         """Opretter Danmarks omrids som tynde grønne rektangler på 70x70 grid"""

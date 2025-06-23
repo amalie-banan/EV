@@ -2,10 +2,13 @@ import random
 from mesa import Agent 
 
 class Windmill(Agent):
-    def __init__(self,model,pos=None, turbine_type='standard'):
+    def __init__(self,model,scaling_factor,pos=None, turbine_type='standard'):
         super().__init__(model)
         self.pos = pos
 
+
+        ##Model specs
+        self.scaling_factor = scaling_factor
         ##Tekniske specs
         self.turbine_type = turbine_type
         self.rated_power = self._get_rated_power(turbine_type) ##MW

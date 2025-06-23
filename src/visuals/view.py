@@ -25,11 +25,52 @@ def agent_portrayal(agent):
             "stroke_color": "green",
             "stroke_width": 2
         }
-    elif isinstance(agent, Windmill):
+    elif isinstance(agent, Windmill) and agent.scaling_factor>=20:
          
          portrayal = {
             "Shape": "rect",
-            "Color": "blue",
+            "Color": "red",
+            "Filled": "True",  # Kun omrids
+            "Layer": 1,  # Foran
+            "w": 1,
+            "h": 1
+        }
+    elif isinstance(agent, Windmill) and agent.scaling_factor<20 and agent.scaling_factor>10:
+         
+         portrayal = {
+            "Shape": "rect",
+            "Color": "orange",
+            "Filled": "True",  # Kun omrids
+            "Layer": 1,  # Foran
+            "w": 1,
+            "h": 1
+        }
+    elif isinstance(agent, Windmill) and agent.scaling_factor<=10 and agent.scaling_factor>5:
+         
+         portrayal = {
+            "Shape": "rect",
+            "Color": "yellow",
+            "Filled": "True",  # Kun omrids
+            "Layer": 1,  # Foran
+            "w": 1,
+            "h": 1
+        }
+    elif isinstance(agent, Windmill) and  agent.scaling_factor<=5 and agent.scaling_factor>1:
+         
+         portrayal = {
+            "Shape": "rect",
+            "Color": "#006400",
+            "Filled": "True",  # Kun omrids
+            "Layer": 1,  # Foran
+            "w": 1,
+            "h": 1
+        }
+         
+    elif isinstance(agent, Windmill) and  agent.scaling_factor<=1:
+         
+         portrayal = {
+            "Shape": "rect",
+            "Color": "#90EE90",
             "Filled": "True",  # Kun omrids
             "Layer": 1,  # Foran
             "w": 1,
@@ -74,15 +115,16 @@ class ModelStats(TextElement):
 def create_server():
     """Opretter og returnerer visualiseringsserver"""
     
-    # Grid visualisering
-    grid = CanvasGrid(agent_portrayal, 70, 70, 1000, 1000)
+    # Grid visualisering 
+    grid = CanvasGrid(agent_portrayal, 100,100, 1000, 1000)
     
     # Model parametre som kan justeres i browseren
     model_params = {
-        "working_windmills": 10,
+        "working_windmills": 1400,
         "broken_windmills": 1,
-        "width": 70,  # Fast værdi
-        "height": 70   # Fast værdi
+        "create_windmill_data": False,
+        "width": 90,  # Fast værdi
+        "height": 90   # Fast værdi
     }
     
     # Opret server

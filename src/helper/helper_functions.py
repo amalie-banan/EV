@@ -1,4 +1,5 @@
 import math
+import pandas as pd
 
 def create_octagon_coords(center_x, center_y, radius):
         coords = []
@@ -10,6 +11,40 @@ def create_octagon_coords(center_x, center_y, radius):
             coords.append((x, y))
         
         return coords
+
+
+def map_coordinates_to_grid(lat, lon,  grid_width, grid_height):
+    """
+    Mapper geografiske koordinater (lat, lon) til grid-positioner (x, y).
+    
+    Parameters:
+    -----------
+    lat : float
+        Latitude
+    lon : float
+        Longitude
+    grid_width : int
+        Bredden af gridet
+    grid_height : int
+        Højden af gridet
+    
+    Returns:
+    --------
+    (int, int)
+        Grid-position (x, y)
+    """
+    # Skaler latituder og longituder til grid dimensioner
+    if pd.isna(lat) or pd.isna(lon):
+        return None
+    min_lat, max_lat, min_lon, max_lon =  54.5, 57.75,7.5, 12.5 
+    x = int((lon - min_lon) / (max_lon - min_lon) * grid_width)
+    y = int((lat - min_lat) / (max_lat - min_lat) * grid_height)
+    
+    # Sørg for, at positionerne er inden for gridet
+    x = max(0, min(grid_width - 1, x))
+    y = max(0, min(grid_height - 1, y))
+    
+    return (x, y)
 
 # Alternativt: Gør Sjælland lidt mindre og mere aflang
 def create_elliptical_octagon(center_x, center_y, radius_x, radius_y):
