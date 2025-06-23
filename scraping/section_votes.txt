@@ -1,0 +1,51 @@
+Section: Ministerområde:Erhvervsministeriet
+  For: {'S': 5, 'V': 5, 'SF': 5, 'M': 5, 'KF': 4, 'RV': 5, 'ALT': 4, 'Mike Villa Fonseca (UFG))': 2, 'DD': 3, 'EL': 2, 'Jon Stephensen (UFG)': 2, 'DF': 3, 'BP': 2, 'Mike Villa Fonseca (UFG)': 1, 'Jeppe Søe (UFG))': 2, 'LA': 1, 'ALT)': 1}
+  Against: {'DD': 1, 'LA': 4, 'EL': 3, 'DF': 2, 'BP': 2, 'Jeppe Søe (UFG))': 2, 'BP)': 1, 'Mai Mercado (KF))': 1, 'KF': 1, 'Mike Villa Fonseca (UFG)': 1}
+Section: Ministerområde:Klima-, Energi- og Forsyningsministeriet
+  For: {'S': 4, 'V': 4, 'DD': 4, 'SF': 4, 'LA': 4, 'M': 4, 'KF': 4, 'EL': 4, 'RV': 4, 'ALT': 3, 'Jon Stephensen (UFG)': 4, 'Jeppe Søe (UFG))': 3, 'Mike Villa Fonseca (UFG))': 1, 'DF': 2, 'BP': 1}
+  Against: {'DF': 2, 'BP)': 3, 'ALT)': 1}
+Section: Ministerområde:Social- og Boligministeriet
+  For: {'S': 5, 'V': 5, 'SF': 2, 'LA': 4, 'M': 5, 'KF': 5, 'RV': 3, 'Mike Villa Fonseca (UFG))': 2, 'RV)': 2, 'Nick Zimmermann (DF))': 1}
+  Against: {'DD': 5, 'EL': 5, 'DF': 4, 'ALT': 4, 'BP': 4, 'Jeppe Søe (UFG))': 5, 'LA': 1, 'SF': 2, 'Mike Villa Fonseca (UFG)': 2}
+Section: Ministerområde:Miljø- og Ligestillingsministeriet
+  For: {'S': 2, 'V': 2, 'DD': 1, 'SF': 2, 'LA': 2, 'M': 2, 'KF': 2, 'EL': 2, 'RV': 2, 'ALT': 2, 'Jon Stephensen (UFG)': 1, 'Mike Villa Fonseca (UFG))': 1, 'Jon Stephensen (UFG))': 1}
+  Against: {'BP)': 1, 'DD': 1, 'Jeppe Søe (UFG))': 1}
+Section: Ministerområde:Justitsministeriet
+  For: {'S': 10, 'V': 10, 'DD': 8, 'M': 10, 'KF': 9, 'EL': 7, 'DF': 6, 'Jon Stephensen (UFG)': 9, 'Mike Villa Fonseca (UFG)': 8, 'Jeppe Søe (UFG))': 8, 'SF': 8, 'LA': 8, 'RV': 8, 'ALT': 7, 'Jon Stephensen (UFG))': 1, 'BP': 3, 'Martin Lidegaard (RV)': 1, 'Mike Villa Fonseca (UFG))': 1}
+  Against: {'LA': 2, 'RV': 1, 'ALT)': 2, 'DD': 2, 'BP': 2, 'Katrine Daugaard (LA))': 1, 'SF': 1, 'KF': 1, 'EL': 2, 'Jeppe Søe (UFG))': 1, 'ALT': 1, 'BP)': 1, 'EL)': 1}
+Section: Ministerområde:Indenrigs- og Sundhedsministeriet
+  For: {'S': 5, 'V': 5, 'DD': 5, 'SF': 5, 'M': 5, 'KF': 5, 'EL': 4, 'RV': 5, 'ALT': 5, 'Jon Stephensen (UFG)': 4, 'Mike Villa Fonseca (UFG)': 3, 'Jeppe Søe (UFG))': 3, 'DF': 3, 'Jon Stephensen (UFG))': 1, 'LA': 2, 'BP': 1, 'Mike Villa Fonseca (UFG))': 1}
+  Against: {'LA': 3, 'Theresa Scavenius (UFG))': 1, 'EL)': 1, 'DF': 1, 'BP': 1, 'Jeppe Søe (UFG))': 1}
+Section: Ministerområde:Uddannelses- og Forskningsministeriet
+  For: {'S': 1, 'V': 1, 'DD': 1, 'SF': 1, 'LA': 1, 'M': 1, 'KF': 1, 'BP': 1, 'Jon Stephensen (UFG)': 1, 'Mike Villa Fonseca (UFG))': 1}
+  Against: {'EL': 1, 'DF': 1, 'RV': 1, 'ALT)': 1}
+Section: Ministerområde:Forsvarsministeriet
+  For: {'S': 1, 'V': 1, 'DD': 1, 'SF': 1, 'LA': 1, 'M': 1, 'KF': 1, 'EL': 1, 'DF': 1, 'RV': 1, 'ALT': 1, 'BP': 1, 'Jon Stephensen (UFG)': 1, 'Mike Villa Fonseca (UFG)': 1, 'Jeppe Søe (UFG))': 1}
+  Against: {}
+Section: Ministerområde:Beskæftigelsesministeriet
+  For: {'S': 4, 'V': 4, 'DD': 4, 'SF': 3, 'LA': 4, 'M': 4, 'KF': 3, 'EL': 3, 'DF': 3, 'RV': 4, 'ALT': 3, 'BP': 3, 'Jon Stephensen (UFG)': 2, 'Jeppe Søe (UFG))': 3, 'Mike Villa Fonseca (UFG))': 1, 'Mike Villa Fonseca (UFG)': 2}
+  Against: {'KF)': 1, 'SF': 1, 'EL': 1, 'DF': 1, 'ALT)': 1}
+Section: Ministerområde:Skatteministeriet
+  For: {'S': 3, 'V': 3, 'DD': 2, 'SF': 3, 'LA': 2, 'M': 3, 'KF': 3, 'EL': 3, 'DF': 2, 'RV': 3, 'ALT': 2, 'Jon Stephensen (UFG)': 2, 'Jeppe Søe (UFG))': 2, 'Jon Stephensen (UFG))': 1, 'BP': 1}
+  Against: {'BP)': 1, 'DD': 1, 'LA': 1, 'DF': 1, 'ALT': 1, 'BP': 1, 'Jeppe Søe (UFG))': 1, 'Christian Rabjerg Madsen (S))': 1}
+Section: Ministerområde:Finansministeriet
+  For: {'S': 1, 'V': 1, 'DD': 3, 'SF': 1, 'LA': 1, 'M': 1, 'KF': 1, 'DF': 3, 'RV': 2, 'ALT': 2, 'Mike Villa Fonseca (UFG)': 2, 'Jeppe Søe (UFG))': 2, 'EL': 1, 'UFG': 1, ')': 1, 'BP': 1}
+  Against: {'BP)': 1, 'S': 2, 'V': 2, 'SF': 2, 'LA': 2, 'M': 2, 'RV': 1, ')': 1, 'KF': 1, 'EL': 1, 'ALT)': 1}
+Section: Ministerområde:By-, Land- og Kirkeministeriet
+  For: {'S': 1, 'V': 1, 'DD': 1, 'SF': 1, 'LA': 1, 'M': 1, 'KF': 1, 'EL': 1, 'DF': 1, 'RV': 1, 'Jon Stephensen (UFG)': 1, 'Mike Villa Fonseca (UFG)': 1, 'Jeppe Søe (UFG))': 1}
+  Against: {'ALT)': 1}
+Section: Ministerområde:Transportministeriet
+  For: {'S': 2, 'V': 2, 'DD': 2, 'SF': 2, 'LA': 2, 'M': 2, 'KF': 2, 'DF': 2, 'RV': 2, 'Jon Stephensen (UFG)': 1, 'Jeppe Søe (UFG))': 2, 'Mike Villa Fonseca (UFG)': 1}
+  Against: {'EL': 2, 'ALT': 1, 'BP)': 1, 'ALT)': 1}
+Section: Ministerområde:Udlændinge- og Integrationsministeriet
+  For: {'DD': 2, 'DF': 1, 'BP': 1, 'Jeppe Søe (UFG))': 2, 'S': 2, 'V': 2, 'SF': 2, 'LA': 2, 'M': 2, 'KF': 2, 'Jon Stephensen (UFG)': 2, 'Mike Villa Fonseca (UFG)': 1, 'EL': 1, 'RV': 1, 'ALT': 1, 'Mike Villa Fonseca (UFG))': 1}
+  Against: {'S': 1, 'V': 1, 'SF': 1, 'LA': 1, 'M': 1, 'EL': 2, 'RV': 2, 'ALT': 1, 'Jon Stephensen (UFG))': 1, 'ALT)': 1, 'DD': 1, 'DF': 1, 'BP': 1, 'Jeppe Søe (UFG))': 1}
+Section: Ministerområde:Ministeriet for Grøn Trepart
+  For: {'S': 1, 'V': 1, 'SF': 1, 'LA': 1, 'M': 1, 'KF': 1, 'EL': 1, 'RV': 1, 'ALT': 1, 'Jon Stephensen (UFG))': 1}
+  Against: {'DD': 1, 'DF': 1, 'Jeppe Søe (UFG))': 1}
+Section: Ministerområde:Kulturministeriet
+  For: {'S': 1, 'V': 1, 'DD': 1, 'SF': 1, 'M': 1, 'KF': 1, 'EL': 1, 'RV': 1, 'ALT': 1, 'Jon Stephensen (UFG))': 1}
+  Against: {'LA': 1, 'DF': 1, 'Mike Villa Fonseca (UFG)': 1, 'Jeppe Søe (UFG))': 1}
+Section: Ministerområde:Digitaliseringsministeriet
+  For: {'S': 1, 'V': 1, 'DD': 1, 'SF': 1, 'LA': 1, 'M': 1, 'KF': 1, 'EL': 1, 'DF': 1, 'RV': 1, 'ALT': 1, 'Jon Stephensen (UFG)': 1, 'Mike Villa Fonseca (UFG))': 1}
+  Against: {}

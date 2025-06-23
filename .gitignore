@@ -1,0 +1,25 @@
+# Ignorer virtuelle miljømapper
+venv/
+env/
+env_old/
+
+# Ignorer Python cache-filer
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorer IDE-specifikke filer
+.vscode/
+.idea/
+
+# Ignorer logfiler
+*.log
+
+# Ignorer midlertidige filer
+*.tmp
+*.swp
+
+# Ignorer OS-specifikke filer
+.DS_Store
+Thumbs.db
