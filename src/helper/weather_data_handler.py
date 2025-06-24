@@ -3,6 +3,7 @@ import json
 import numpy as np
 from datetime import datetime, timedelta
 import random
+import pandas as pd
 
 
 class WeatherDataHandler:
@@ -34,30 +35,59 @@ class WeatherDataHandler:
         self.owm_api_key = None  # Sæt din API key her
         self.owm_base_url = "http://api.openweathermap.org/data/2.5/weather"
 
-    def get_weather_data(self,parameters):
+    def get_weather_data(self, parameters, csv_filename="weather_data.csv"):
+        """Hent vejrdata og gem som CSV"""
+        
+        all_observations = []
         
         for bbox in self.bbox:
-            for p in parameters:
+            for parameter in parameters:
                 params = {
-                    'limit': self.limit,  # Antal resultater
-                    'datetime':  self.startdate + "/" + self.enddate,  # ISO8601-periode
+                    'limit': self.limit,
+                    'datetime': self.startdate + "/" + self.enddate,
                     'bbox': bbox,
-                    'parameterId': p,  # fx wind_speed
+                    'parameterId': parameter,
                     'api-key': self.dmi_api_key
                 }
                 
                 response = requests.get(self.dmi_base_url, params=params)
-        
+                
                 if response.status_code == 200:
                     data = response.json()
+                    
                     for obs in data.get('features', []):
-                        print(obs['properties'])
-                        print(obs['geometry']['coordinates'])
-
+                        properties = obs['properties']
+                        coordinates = obs['geometry']['coordinates']
+                        
+                        # Samle alt i én række
+                        row = {
+                            'longitude': coordinates[0],
+                            'latitude': coordinates[1],
+                            'parameter_id': parameter,
+                            'value': properties.get('value'),
+                            'observed': properties.get('observed'),
+                            'station_id': properties.get('stationId'),
+                            'bbox_area': bbox
+                        }
+                        
+                        all_observations.append(row)
+                
                 else:
                     print(f"Fejl {response.status_code}: {response.text}")
-
+        
+        # Konverter til DataFrame og gem
+        if all_observations:
+            df = pd.DataFrame(all_observations)
+            df['observed'] = pd.to_datetime(df['observed'])
+            df['value'] = pd.to_numeric(df['value'], errors='coerce')
+            
+            df.to_csv(csv_filename, index=False, encoding='utf-8')
+            print(f"✅ Gemt {len(df)} observationer som {csv_filename}")
+            
+            return df
+        
+        return pd.DataFrame()
 startdate = '2024-06-22' + 'T00:00:00Z'
 enddate = '2024-06-23' + 'T00:00:00Z'
 
-handler = WeatherDataHandler(startdate,enddate)
+handler = WeatherDataHandler(startdate,enddate,limit=10000)

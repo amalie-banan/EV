@@ -30,3 +30,4 @@ Thumbs.db
 
 # Ignorer alle filer i vindmoeller_data mappen
 vindmoeller_data/*
+weather_parquet_data/*

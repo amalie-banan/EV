@@ -24,7 +24,8 @@ class Windmill(Agent):
         self.operational = True
         self.maintenance_needed = False
         self.age = 0
-        self.effeciency = 1.0 #Degrades over tid
+        self.efficiency = 1.0 #Degrades over tid
+
 
         ##Output tracking
         self.current_power_output = 0.0 # MW
@@ -72,5 +73,6 @@ class Windmill(Agent):
             "revenue": f"{self.revenue:.0f} DKK"
         }    
     def step(self):
+        self.age_windmill()
         print(self.get_info())
  

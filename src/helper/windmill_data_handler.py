@@ -8,27 +8,7 @@ from shapely.geometry import Point
 
 class WindmillDataHandler:
     def __init__(self):
-        gdf = self.download_windmill_data()
-        print(type(gdf))
-        if gdf is not None:
-            print("\n" + "="*50)
-            print(self.get_summary(gdf))
-            
-            # Test position extraction
-            positions = self.get_windmill_positions(gdf)
-            print(type(gdf))
-            gdf_converted = self.transform_utm_to_wgs84(gdf)
-                
-                # Gem med konverterede koordinater
-            self.save_with_coordinates(gdf_converted, "vindmoeller_complete.csv")
-
-            print(f"\nEksempel positioner (første 3):")
-            for i, pos in enumerate(positions[:3]):
-                print(f"  {i+1}. Lat: {pos['lat']:.4f}, Lon: {pos['lon']:.4f}, Kapacitet: {pos['capacity']} MW")
-            
-            print(f"\n✅ Fundet {len(positions)} vindmøller!")
-        else:
-            print("\n❌ Fejl ved loading af data")
+       pass
 
     def download_windmill_data(self):
         """Download og udpak vindmølle data fra Energistyrelsen"""

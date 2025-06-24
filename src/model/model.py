@@ -4,8 +4,10 @@ from mesa.datacollection import DataCollector
 import numpy as np
 import random
 import math
+from pathlib import Path
 import os
 import pandas as pd
+import traceback
 
 # Korrekte imports til dine agent klasser
 from agent.GridNode import GridNode  
@@ -14,51 +16,41 @@ from agent.Windmill import Windmill
 from agent.DenmarkOutline import DenmarkOutline
 from helper.helper_functions import create_elliptical_octagon_outline_precise,get_cells_inside_outline_scanline,map_coordinates_to_grid
 from helper.windmill_data_handler import WindmillDataHandler
+from helper.parquet_weather_data_handler import ParquetWeatherHandler
 
-class EVModel(Model):
+class WindEnergyModel(Model):
     """Model af vindmøller i Danmark"""
-    
-    def __init__(self, working_windmills=200, broken_windmills=0, create_windmill_data=False, width=60, height=60 ):
-        super().__init__()
-        print(width)
-        print(height)
+    def __init__(self, working_windmills=200, broken_windmills=0, 
+                 time_resolution='daily',
+                 weather_data_startdate='2024-01-01T00:00:00Z',
+                 weather_data_enddate='2024-01-08T00:00:00Z',
+                 create_windmill_data=False, create_weather_data=False, width=60, height=60 ):
+        super().__init__() 
+       
+        self.create_weather_data=create_weather_data
+        self.weather_data_startdate=weather_data_startdate
+        self.weather_data_enddate=weather_data_enddate
+        self.create_windmill_data=create_windmill_data
+
+        self.windmills_created = False 
         self.num_working_windmills = working_windmills
         self.num_broken_windmills = broken_windmills
         self.grid = MultiGrid(width, height, True)
         self.current_step = 0
+        self.time_resolution = time_resolution
+        self.time_step_hours = {"hourly": 1,"daily": 24, "weekly": 168,"monthly": 720}[time_resolution]
 
-        if not create_windmill_data and os.path.isfile("vindmoeller_complete.csv"):
-            windmill_data = pd.read_csv("vindmoeller_complete.csv")
-        elif create_windmill_data or not os.path.isfile("vindmoeller_complete.csv"):
-            WindmillDataHandler()
-            windmill_data = pd.read_csv("vindmoeller_complete.csv")
         
-        print(windmill_data.columns)
-        windmill_data = windmill_data[['GSRN','Tilsluttet','Kapacitet','Rotordiame','Navhøjde',
-                                       'Fabrikat','Model','Kommune', 'Postnummer', 'Ejerlav',
-                                       'Latitude', 'Longitude']]
-     
-        postnummer_counts = windmill_data['Postnummer'].value_counts()
-
-        pos_ = map_coordinates_to_grid(55.697791,12.622368,self.grid.width, self.grid.height)
-        windmill_data['Grid_Position'] = windmill_data.apply(
-                lambda row: map_coordinates_to_grid(row['Latitude'], row['Longitude'], self.grid.width, self.grid.height),
-                axis=1
-            )
-        
-        
-      
-        print(list(windmill_data['Grid_Position']))
-      
-        #outline_coords = self.create_denmark_outline()
-       #self.valid_coords = self.create_valid_coords(Grid_Position_counts)
+        windmill_data = self.get_windmill_data()
         self.valid_coords = list(windmill_data['Grid_Position'])
 
         Grid_Position_counts = windmill_data['Grid_Position'].value_counts()
         self.grid_position_dict = Grid_Position_counts.to_dict()
+
+
+        #### CREATE AGENTS ####
         self.create_windmills('standard')
        
-        
     def create_windmills(self,turbine_type):
         print("#"*50)
         print("Creating Windmills to map")
@@ -116,7 +108,7 @@ class EVModel(Model):
                     print(f"Placed DenmarkOutline at: ({x},{y})")
 
         return outline_coordinates
-    
+ 
     def create_valid_coords(self,outline_coords):
         # Find alle celler INDE I Danmark
         denmark_inside_cells = get_cells_inside_outline_scanline(outline_coords, self.grid.width, self.grid.height)
@@ -137,7 +129,41 @@ class EVModel(Model):
         
         # Resten af din kode som før...
         return cells_in_denmark
-           
+    def get_weather_data(self):
+        if not self.create_weather_data and Path("weather_parquet_data").exists():
+            print("📂 Loading existing data (should NOT download)")
+            handler = ParquetWeatherHandler()
+            weather_data = handler.load_data()
+        else:
+            print("📂 Download data")
+            handler = ParquetWeatherHandler(self.weather_data_startdate,self.weather_data_enddate)
+            handler.download_all_data(chunk_days=7)
+            weather_data = handler.load_data()     
+        
+        weather_data['Grid_Position'] = weather_data.apply(
+                lambda row: map_coordinates_to_grid(row['latitude'], row['longitude'], self.grid.width, self.grid.height),
+                axis=1)
+        weather_data.to_csv("weather_data.csv")
+        return weather_data  
+
+    def get_windmill_data(self):
+        if not self.create_windmill_data and os.path.isfile("vindmoeller_complete.csv"):
+            windmill_data = pd.read_csv("vindmoeller_complete.csv")
+        else:
+            #self.create_windmill_data or not os.path.isfile("vindmoeller_complete.csv"):
+            WindmillDataHandler()
+            windmill_data = pd.read_csv("vindmoeller_complete.csv")
+        
+        windmill_data = windmill_data[['GSRN','Tilsluttet','Kapacitet','Rotordiame','Navhøjde',
+                                       'Fabrikat','Model','Kommune', 'Postnummer', 'Ejerlav',
+                                       'Latitude', 'Longitude']]
+     
+        
+        windmill_data['Grid_Position'] = windmill_data.apply(
+                lambda row: map_coordinates_to_grid(row['Latitude'], row['Longitude'], self.grid.width, self.grid.height),
+                axis=1
+            )
+        return windmill_data
     def step(self):
         """En simulation step"""
         self.current_step += 1
