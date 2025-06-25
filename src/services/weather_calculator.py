@@ -5,6 +5,7 @@ class WeatherEfficiencyCalculator:
     @staticmethod
     def calculate_wind_power_curve(wind_speed, turbine_type="standard"):
         """Calculate power output based on wind speed"""
+      
         # Different turbine types have different curves
         curves = {
             "standard": {"cut_in": 3.0, "rated": 12.0, "cut_out": 25.0},
@@ -24,7 +25,8 @@ class WeatherEfficiencyCalculator:
             # Cubic relationship below rated wind
             ratio = (wind_speed - curve["cut_in"]) / (curve["rated"] - curve["cut_in"])
             return ratio ** 3
-    
+ 
+
     @staticmethod
     def calculate_temperature_efficiency(temperature, optimal_temp=15.0):
         """Calculate efficiency based on temperature"""

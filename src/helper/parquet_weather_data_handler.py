@@ -72,7 +72,7 @@ class ParquetWeatherHandler:
                 'bbox': bbox,
                 'parameterId': parameter,
                 'api-key': self.dmi_api_key,
-                'limit': 10000
+                'limit': 1000
             }
             
             response = requests.get(self.dmi_base_url, params=params, timeout=60)
@@ -217,7 +217,6 @@ class ParquetWeatherHandler:
     def load_data(self, region=None, parameter=None, start_date=None, end_date=None):
         """Load data med filtering"""
         parquet_files = list(self.data_dir.glob("*.parquet"))
-        print("HEJHEJEHJEH")
         if not parquet_files:
             print("❌ Ingen Parquet filer fundet")
             return pd.DataFrame()

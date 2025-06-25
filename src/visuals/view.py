@@ -47,8 +47,9 @@ def create_server():
     get_data_enddate = '2024-01-08T23:59:59Z'
     
     model_params = {
-        "working_windmills": 10,
+        "working_windmills": 1400,
         "broken_windmills": 1,
+        'time_resolution': 'daily',
         "create_windmill_data": False,
         "create_weather_data": False,
         "weather_data_startdate": get_data_startdate,
