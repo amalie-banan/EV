@@ -118,9 +118,11 @@ class Windmill(Agent):
         }    
     def step(self):
         if self.current_time > self.model.weather_data.index.get_level_values("timestamp").max():
-            print("✅ All data processed.")
+            produced = self.model.produced_in_jan2023.get(self.pos)
+            print(f"Agent at ", self.pos, " produced this much energy ", produced, " and the model says it produced ", self.total_energy_produced)
+            print(f"that is difference of ", produced - self.total_energy_produced )
             return
-
+        print(self.current_time)
         # Find slut-tid for perioden 
         next_time = self.freq_offsets[self.time_resolution](self.current_time)
 
@@ -134,7 +136,13 @@ class Windmill(Agent):
         
         # Beregn energi for perioden
         energy_df = self.energy_calculator.calculate_energy(df_period, time_resolution=self.time_resolution)
-        #self.latest_energy_kWh = energy_this_step
+       # Gem energien for dette step
+        if not energy_df.empty:
+            self.latest_energy_kWh = energy_df["energy_kWh"].iloc[0]
+        else:
+            self.latest_energy_kWh = 0
+        self.total_energy_produced += self.latest_energy_kWh
+       # print(self.total_energy_produced)
         # Gå videre til næste periode
         self.current_time = next_time
         

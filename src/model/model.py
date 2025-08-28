@@ -1,6 +1,5 @@
 from mesa import Model
 from mesa.space import MultiGrid
-from mesa.datacollection import DataCollector
 import numpy as np
 import time
 import random
@@ -11,9 +10,12 @@ import pandas as pd
 import traceback
 from datetime import datetime, timedelta
 from cleaning.missing_data import MissingWeatherDataAnalyzer
+from mesa.datacollection import DataCollector
 # I model/model.py
 from services.weather_coupler import WeatherWindmillCoupler
 from services.weather_calculator import WeatherEfficiencyCalculator
+#from mesa import RandomActivation  
+
 
 # Korrekte imports til dine agent klasser
 from agent.GridNode import GridNode  
@@ -33,12 +35,15 @@ class WindEnergyModel(Model):
                  create_windmill_data=False, create_weather_data=False, width=60, height=60 ):
         super().__init__() 
        
+        #self.schedule = RandomActivation(self)
+    
         self.create_weather_data=create_weather_data
         self.weather_data_startdate=weather_data_startdate
         self.weather_data_enddate=weather_data_enddate
         self.create_windmill_data=create_windmill_data
 
-        self.current_simulation_time = datetime(2024, 1, 1, 12, 0, 0)
+        self.current_simulation_time = datetime.strptime(weather_data_startdate, "%Y-%m-%dT%H:%M:%SZ") #datetime(2024, 1, 1, 12, 0, 0)
+        print(self.current_simulation_time)
         self.time_resolution = time_resolution
         self.time_step_in_hours = {'hourly': 1, 'daily': 24, 'weekly': 168, 'monthly': 720}[time_resolution]
         
@@ -56,9 +61,24 @@ class WindEnergyModel(Model):
         self.windmill_data = self.get_windmill_data()
 
 
-
+        
+        
         #### CREATE AGENTS ####
         self.create_windmills('standard')
+        
+        self.produced_in_jan2023 = self.windmill_data.set_index('Grid_Position')['Y2023-1_mean'].to_dict()
+
+
+        ### CREATE DATACOLLECTORS ###
+
+    
+        
+        self.energy_datacollector = DataCollector(
+        model_reporters={
+            "TotalEnergyProduced": lambda m: sum(agent.total_energy_produced for agent in m.agents if isinstance(agent, Windmill))
+
+        }
+    )
        
     def create_windmills(self,turbine_type):
         print("#"*50)
@@ -69,6 +89,7 @@ class WindEnergyModel(Model):
         grid_position_dict = Grid_Position_counts.to_dict()
         rotodiam_mean_dict = self.windmill_data.set_index('Grid_Position')['Rotodiam_mean'].to_dict()
         capacity_mean_dict = self.windmill_data.set_index('Grid_Position')['Kapacitet_mean'].to_dict()
+        
 
 
         positions = list(set([x for x in valid_coords if x is not None]))
@@ -86,7 +107,7 @@ class WindEnergyModel(Model):
                         capacity_mean = capacity_mean_dict.get(pos)
                         windmill = Windmill(self, rotordiameter=rotordiam_mean,capacity_kw=capacity_mean,scaling_factor=scaling_factor,turbine_type=turbine_type)
                         self.grid.place_agent(windmill, pos)
-                        agents_to_place-=1
+                        agents_to_place-=1 
                 #        print(f"Placed Windmill #{i+1} at: ", pos, " with scaling factor ", scaling_factor)
 
                     else:
@@ -150,11 +171,13 @@ class WindEnergyModel(Model):
     def get_weather_data(self):
         if not self.create_weather_data and Path("weather_parquet_data").exists():
             print("📂 Loading existing data (should NOT download)")
-            handler = ParquetWeatherHandler()
+            handler = ParquetWeatherHandler(self.weather_data_startdate,self.weather_data_enddate)
+            print(self.weather_data_startdate,self.weather_data_enddate)
             weather_data = handler.load_data()
         else:
             print("📂 Download data")
             handler = ParquetWeatherHandler(self.weather_data_startdate,self.weather_data_enddate)
+            
             handler.download_all_data(chunk_days=7)
             weather_data = handler.load_data()     
         
@@ -200,34 +223,42 @@ class WindEnergyModel(Model):
         
         windmill_data = windmill_data[['GSRN','Tilsluttet','Kapacitet','Rotordiame','Navhøjde',
                                        'Fabrikat','Model','Kommune', 'Postnummer', 'Ejerlav',
-                                       'Latitude', 'Longitude']]
+                                       'Latitude', 'Longitude','Y2023-1']]
      
         
         windmill_data['Grid_Position'] = windmill_data.apply(
                 lambda row: map_coordinates_to_grid(row['Latitude'], row['Longitude'], self.grid.width, self.grid.height),
                 axis=1
             )
-        # Beregn gennemsnittet af 'rotordiam' for hver 'Grid_Position'
+        # Beregn gennemsnittet af 'rotordiam' for hver 'Grid_Position' - relevant hvis der er flere vindmøller på ét (x,y)
         mean_rotordiam = windmill_data.groupby('Grid_Position')['Rotordiame'].mean().reset_index()
         mean_rotordiam.rename(columns={'Rotordiame': 'Rotodiam_mean'}, inplace=True)
         windmill_data = windmill_data.merge(mean_rotordiam, on='Grid_Position', how='left')
 
-        #Beregn gennemsnittet af kapacitet tfor hver Grid_Position
+        #Beregn gennemsnittet af kapacitet tfor hver Grid_Position - relevant hvis der er flere vindmøller på ét (x,y)
         mean_capacity = windmill_data.groupby('Grid_Position')['Kapacitet'].mean().reset_index()
         mean_capacity.rename(columns={'Kapacitet': 'Kapacitet_mean'}, inplace=True)
         windmill_data = windmill_data.merge(mean_capacity, on='Grid_Position', how='left')
 
+ 
+
+        mean_jan2023 = windmill_data.groupby('Grid_Position')['Y2023-1'].mean().reset_index()
+        mean_jan2023.rename(columns={'Y2023-1': 'Y2023-1_mean'}, inplace=True)
+
+        # Merge tilbage til originalt datasæt
+        windmill_data = windmill_data.merge(mean_jan2023, on='Grid_Position', how='left')
+
         return windmill_data
     def step(self):
         """En simulation step"""
+        
         start = time.perf_counter()
-
-        # ... din kode til step 
-            
-  #      self.schedule.step()
-      #  total_energy = sum([agent.latest_energy_kWh for agent in self.schedule.agents if isinstance(agent, Windmill)])
-       # self.datacollector.collect(self, model_energy=total_energy)
-
+ 
+     
+        self.agents.do("step")
+        self.energy_datacollector.collect(self)
+        print(self.energy_datacollector.get_model_vars_dataframe().tail(1))
+      #  print(self.energy_datacollector.get_model_vars_dataframe())
 
        
         self.current_step += 1

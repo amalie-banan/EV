@@ -41,13 +41,15 @@ class ModelStats(TextElement):
 def create_server():
     """Opretter og returnerer visualiseringsserver"""
     print("Creating server...")
-    
+    energy_chart = ChartModule(
+        [{"Label": "TotalEnergyProduced", "Color": "Black"}],
+        data_collector_name='energy_datacollector')
     grid = CanvasGrid(agent_portrayal, 100, 100, 1000, 1000)
-    get_data_startdate = '2024-01-01T23:59:59Z'
-    get_data_enddate = '2024-01-08T23:59:59Z'
+    get_data_startdate = '2023-01-01T00:00:00Z'
+    get_data_enddate = '2023-01-31T00:00:00Z'
     
     model_params = {
-        "working_windmills": 1400,
+        "working_windmills": 10,
         "broken_windmills": 1,
         'time_resolution': 'daily',
         "create_windmill_data": False,
@@ -60,7 +62,7 @@ def create_server():
     
     server = ModularServer(
         WindEnergyModel,
-        [grid],
+        [grid,energy_chart],
         "Danmark - Vindmøller",
         model_params
     )
